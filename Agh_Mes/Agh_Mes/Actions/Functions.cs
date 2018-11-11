@@ -12,7 +12,7 @@ namespace Agh_Mes
         public static Grid GenerateGrid() {
             double height, width;
             int nH, nL;
-            using (TextReader reader = File.OpenText("../../inputs.txt")) {
+            using (TextReader reader = File.OpenText("../../Files/inputs.txt")) {
                 height = double.Parse(reader.ReadLine());
                 width = double.Parse(reader.ReadLine());
                 nH = int.Parse(reader.ReadLine());
