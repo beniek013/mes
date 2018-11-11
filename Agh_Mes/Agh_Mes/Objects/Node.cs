@@ -21,7 +21,7 @@ namespace Agh_Mes
         {
             id = Id;
             temperature = temp;
-            x = x0;        
+            x = x0;
             y = y0;
         }
     }

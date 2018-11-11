@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Agh_Mes
 {
     public class Element
     {
-        public int id;
+        private readonly int id;
         public string K; // współczynnik przewodzenia
 
         public Tuple<int, int, int, int> nodeIds;

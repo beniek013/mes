@@ -27,11 +27,6 @@ namespace Agh_Mes
                 }
             }
             grid.nodes = nodeList;
-            /*for (int i = 0; i < nL; i++) {
-                for (int j = 0; j < nH; j++) {
-                    elementList.Add(new Element(new Tuple<int, int, int, int>()))
-                }
-            }*/
             
             foreach (var node in nodeList)
             {
