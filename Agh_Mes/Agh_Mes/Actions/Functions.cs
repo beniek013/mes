@@ -38,7 +38,8 @@ namespace Agh_Mes
                     var upNode = nodeList.Find(x => x.id == node.id + 1);
                     var leftNode = nodeList.Find(x => x.id == node.id + nH);
                     var leftUpNode = nodeList.Find(x => x.id == node.id + nH + 1);
-                    elementList.Add(new Element(elementList.Count + 1, new Tuple<int, int, int, int>(node.id, leftNode.id, leftUpNode.id, upNode.id)));
+                    //elementList.Add(new Element(elementList.Count + 1, new Tuple<Node, Node, Node, Node>(node, leftNode, leftUpNode, upNode)));
+                    elementList.Add(new Element(elementList.Count + 1, new List<Node> { node, leftNode, leftUpNode, upNode}));
                 }
             }
             grid.elements = elementList;

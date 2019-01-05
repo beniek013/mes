@@ -42,6 +42,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Actions\Constatns.cs" />
     <Compile Include="Objects\Element.cs" />
     <Compile Include="Actions\Functions.cs" />
     <Compile Include="Objects\Grid.cs" />

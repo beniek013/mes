@@ -7,6 +7,10 @@ namespace Agh_Mes
         {
             var grid = Functions.GenerateGrid();
             grid.PrintInfo();
+            foreach (var element in grid.elements) {
+                element.CalculateMatrxH();
+                element.PrintMatrixH();
+            }
             Console.ReadKey();
         }
     }
