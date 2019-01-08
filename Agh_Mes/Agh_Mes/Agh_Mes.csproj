@@ -46,6 +46,7 @@
     <Compile Include="Objects\Element.cs" />
     <Compile Include="Actions\Functions.cs" />
     <Compile Include="Objects\Grid.cs" />
+    <Compile Include="Objects\Jakobian.cs" />
     <Compile Include="Objects\Node.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

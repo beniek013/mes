@@ -11,10 +11,11 @@ namespace Agh_Mes
         public int id;
         public double temperature;
         public int x, y;
+        public bool status;
 
         public void PrintInfo()
         {
-            Console.WriteLine($"{id}. ({x}, {y}),  t: {temperature}");
+            Console.WriteLine($"{id}. ({x}, {y}),  t: {temperature}, status: {status}");
         }
 
         public Node(int Id, double temp, int x0, int y0)
@@ -23,6 +24,10 @@ namespace Agh_Mes
             temperature = temp;
             x = x0;
             y = y0;
+            if (this.x == 0 || this.y == 0 || this.x == 3 || this.y == 3)
+                this.status = true;
+            else
+                this.status = false;
         }
     }
 }
