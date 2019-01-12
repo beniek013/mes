@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using Agh_Mes.Actions;
 
 namespace Agh_Mes
 {
@@ -23,7 +24,7 @@ namespace Agh_Mes
             var elementList = new List<Element>();
             for (int i = 0; i < nL; i++) {
                 for (int j = 0; j < nH; j++) {
-                    nodeList.Add(new Node(i * nH + j + 1 , 10, i, j));
+                    nodeList.Add(new Node(i * nH + j + 1 , Constatns.initialTemperature, i * (Constatns.w/(Constatns.nW - 1)), j * (Constatns.h / (Constatns.nH - 1))));
                 }
             }
             grid.nodes = nodeList;
@@ -42,7 +43,7 @@ namespace Agh_Mes
                 }
             }
             grid.elements = elementList;
-
+            grid.SetHeatedSurfaces();
             return grid;
         }
 
@@ -105,5 +106,6 @@ namespace Agh_Mes
         {
             return 0.25 * (1 - ksi);
         }
+
     }
 }

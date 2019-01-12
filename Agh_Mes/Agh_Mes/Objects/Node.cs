@@ -10,7 +10,7 @@ namespace Agh_Mes
     {
         public int id;
         public double temperature;
-        public int x, y;
+        public double x, y;
         public bool status;
 
         public void PrintInfo()
@@ -18,7 +18,7 @@ namespace Agh_Mes
             Console.WriteLine($"{id}. ({x}, {y}),  t: {temperature}, status: {status}");
         }
 
-        public Node(int Id, double temp, int x0, int y0)
+        public Node(int Id, double temp, double x0, double y0)
         {
             id = Id;
             temperature = temp;

@@ -36,18 +36,24 @@ namespace Agh_Mes.Objects
             }
         }
 
-        public void calculateInterpolatedCoordinates(Element element)
+        public void LiczWspolrzednePunktopwCalkowania(Element element)
         {
             for (int i = 0; i < 4; i++)
             {
-                InterpolatedCoordinates[i, 0] = N[i, 0] * element.nodess[0].x + N[i, 1] * element.nodess[1].x + N[i, 2] * element.
-                    nodess[2].x + N[i, 3] * element.nodess[3].x;
-                InterpolatedCoordinates[i, 1] = N[i, 0] * element.nodess[0].y + N[i, 1] * element.nodess[1].y + N[i, 2] * element.
-                    nodess[2].y + N[i, 3] * element.nodess[3].y;
+                InterpolatedCoordinates[i, 0] = 
+                    N[i, 0] * element.nodess[0].x + 
+                    N[i, 1] * element.nodess[1].x + 
+                    N[i, 2] * element.nodess[2].x + 
+                    N[i, 3] * element.nodess[3].x;
+                InterpolatedCoordinates[i, 1] = 
+                    N[i, 0] * element.nodess[0].y + 
+                    N[i, 1] * element.nodess[1].y + 
+                    N[i, 2] * element.nodess[2].y + 
+                    N[i, 3] * element.nodess[3].y;
             }
         }
 
-        public void calculateShapeFunctionsDerivatives()
+        public void LiczPochodneFunkcjiKształtu()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -63,7 +69,7 @@ namespace Agh_Mes.Objects
             }
         }
 
-        public void calculateJacobian(Element element)
+        public void LiczJakobian(Element element)
         {
             // i - punkt calkowania 
             // jacobian[i][0-1] - eta
@@ -80,30 +86,11 @@ namespace Agh_Mes.Objects
                 jacobian[i, 3] = element.nodess[0].y * dNdeta[0, i] + element.nodess[1].y * dNdeta[1, i] + element.nodess[2].y *
                     dNdeta[2, i] + element.nodess[3].y * dNdeta[3, i];
 
-                /*
-                std::cout << jacobian[i][0] << std::endl;
-                std::cout << jacobian[i][1] << std::endl;
-                std::cout << jacobian[i][2] << std::endl;
-                std::cout << jacobian[i][3] << std::endl;
-                */
-
                 detJacobian[i] = jacobian[i, 0] * jacobian[i, 3] - jacobian[i, 1] * jacobian[i, 2];
-
-                /*
-                std::cout << detJacobian[i] << std::endl;
-                */
-
                 inversedJacobian[i, 0] = jacobian[i, 3] / detJacobian[i];
                 inversedJacobian[i, 1] = -(jacobian[i, 1] / detJacobian[i]);
                 inversedJacobian[i, 2] = -(jacobian[i, 2] / detJacobian[i]);
                 inversedJacobian[i, 3] = jacobian[i, 0] / detJacobian[i];
-
-                /*
-                std::cout << inversedJacobian[i][0] << std::endl;
-                std::cout << inversedJacobian[i][1] << std::endl;
-                std::cout << inversedJacobian[i][2] << std::endl;
-                std::cout << inversedJacobian[i][3] << std::endl;
-                */
             }
         }
     }
