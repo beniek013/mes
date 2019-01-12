@@ -31,35 +31,6 @@ namespace Agh_Mes
 
         public double[,] HBC = new double[4, 4];
 
-        public void PrintInfo()
-        {
-            Console.WriteLine($"{id}. ({nodess[0].id}, {nodess[1].id}, {nodess[2].id}, {nodess[3].id}), {K}");
-        }
-        /*
-        public void PrintMatrixH() {
-            this.PrintInfo();
-            var message = String.Empty;
-            foreach (var list in H) {
-                foreach (var dub in list)
-                    message += $"{dub} ";
-                message += "\n";
-            }
-            Console.WriteLine($"H: {message}");
-        }
-
-        public void PrintMatrixC()
-        {
-            this.PrintInfo();
-            var message = String.Empty;
-            foreach (var list in C)
-            {
-                foreach (var dub in list)
-                    message += $"{dub} ";
-                message += "\n";
-            }
-            Console.WriteLine($"C: {message}");
-        }
-        */
         public Element(int Id, List<Node> nodess)
         {
             id = Id;

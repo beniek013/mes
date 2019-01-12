@@ -19,7 +19,7 @@ namespace Agh_Mes.Actions
         public static double simulationTime = 500;
         public static double h = 0.1;//wysokość
         public static double w = 0.1;//szerokość
-        public static double nH = 4;//szerokość
+        public static double nH = 4;//wysokość
         public static double nW = 4;//szerokość
     }
     

@@ -71,10 +71,6 @@ namespace Agh_Mes.Objects
 
         public void LiczJakobian(Element element)
         {
-            // i - punkt calkowania 
-            // jacobian[i][0-1] - eta
-            // jacobian[i][2-3] - ksi
-
             for (int i = 0; i < 4; i++)
             {
                 jacobian[i, 0] = element.nodess[0].x * dNdksi[0, i] + element.nodess[1].x * dNdksi[1, i] + element.nodess[2].x *

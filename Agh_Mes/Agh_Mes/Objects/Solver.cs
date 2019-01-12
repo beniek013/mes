@@ -57,7 +57,6 @@ namespace Agh_Mes.Objects
                 if (Math.Abs(tabAB[i, i]) < e)
                 {
                     throw new Exception("dzielnik rowny 0");
-                    break;
                 }
                 tabResult[i] = s / tabAB[i, i];
                 r = true;

@@ -11,7 +11,7 @@ namespace Agh_Mes
     {
         public List<Node> nodes;
         public List<Element> elements;
-
+        
         public double[,] globalH = new double[16,16];
         public double[,] globalHBC = new double[16,16];
         public double[,] globalC = new double[16,16];
@@ -20,25 +20,36 @@ namespace Agh_Mes
         public double[,] HC = new double[16,16];
         public double[] t0 = new double[16];
         public double[] t1 = new double[16];
-        public void PrintInfo() {
-            Console.WriteLine("\nNodes: ");
-            if (nodes.Any())
-            {
-                foreach (var node in nodes)
-                {
-                    node.PrintInfo();
-                }
-            }
-            Console.WriteLine("\nElements: ");
-            if (elements.Any()) {
-                foreach (var element in elements)
-                {
-                    element.PrintInfo();
-                }
-            }
-            Console.WriteLine($"\nNodes: {nodes.Count}, Elements: {elements.Count}");
-        }
 
+        public void CreateNet()
+        {
+            int nH, nW;
+            nH = (int)Constatns.nH;
+            nW = (int)Constatns.nW;
+            nodes = new List<Node>();
+            elements = new List<Element>();
+            for (int i = 0; i < nH; i++)
+            {
+                for (int j = 0; j < nW; j++)
+                {
+                    nodes.Add(new Node(i * nH + j + 1, Constatns.initialTemperature, i * (Constatns.w / (nW - 1)), j * (Constatns.h / (nH - 1))));
+                }
+            }
+            foreach (var node in nodes)
+            {
+                if (nodes.Any(x => x.id == node.id + 1)
+                    && nodes.Any(y => y.id == node.id + nH)
+                    && nodes.Any(z => z.id == node.id + nH + 1)
+                    && node.id % nH != 0)
+                {
+                    var upNode = nodes.Find(x => x.id == node.id + 1);
+                    var leftNode = nodes.Find(x => x.id == node.id + nH);
+                    var leftUpNode = nodes.Find(x => x.id == node.id + nH + 1);
+                    elements.Add(new Element(elements.Count + 1, new List<Node> { node, leftNode, leftUpNode, upNode }));
+                }
+            }
+            SetHeatedSurfaces();
+        }
         public void Aggregate()
         {
             double[] temp = new double[16];
@@ -48,9 +59,8 @@ namespace Agh_Mes
             globalC = new double[16, 16];
             globalP = new double[16];
 
-            for (int i = 0; i < 9; i++)
+            foreach(var element in elements)
             {
-                var element = elements[i];
                 Jakobian jakobian = new Jakobian();
                 jakobian.LiczWspolrzednePunktopwCalkowania(element);
                 jakobian.LiczPochodneFunkcjiKształtu();
@@ -91,15 +101,7 @@ namespace Agh_Mes
                     temp[j] = 0;
                 }
             }
-            for (int i = 0; i < 4 * 4; i++) {
-                for (int j = 0; j < 4 * 4; j++)
-                {
-                    globalH[i,j] += globalHBC[i,j] + (globalC[i,j] / Constatns.simulationStepTime);
-                }
-            }
-
         }
-
         public void PrintGlobalMatrixC()
         {
             for (int j = 0; j < 16; j++)
@@ -111,11 +113,18 @@ namespace Agh_Mes
                 Console.WriteLine();
             }
         }
-
         public void CalculateTemperature()
         {
+            for (int j = 0; j < 4 * 4; j++)
+            {
+                for (int k = 0; k < 4 * 4; k++)
+                {
+                    globalH[j, k] += globalHBC[j, k] + (globalC[j, k] / Constatns.simulationStepTime);
+                }
+            }
             for (int i = 0; i < Constatns.simulationTime; i += (int)Constatns.simulationStepTime)
             {
+
                 foreach (var node in nodes)
                 {
                     t0[nodes.IndexOf(node)] = node.temperature;
@@ -129,20 +138,6 @@ namespace Agh_Mes
                 Console.WriteLine($"Time[s] {i + Constatns.simulationStepTime} MinTemp: {t1.Min()} MaxTemp: {t1.Max()}");
             }
         }
-
-        public static double[,] ConvertMatrix(double[] flat, int m, int n)
-        {
-            if (flat.Length != m * n)
-            {
-                throw new ArgumentException("Invalid length");
-            }
-            double[,] ret = new double[m, n];
-            // BlockCopy uses byte lengths: a double is 8 bytes
-            Buffer.BlockCopy(flat, 0, ret, 0, flat.Length * sizeof(double));
-            return ret;
-        }
-
-
         public void SetHeatedSurfaces()
         {
 
@@ -166,39 +161,5 @@ namespace Agh_Mes
                 elements[i * (4 - 1) + (4 - 2)].isSurface[2] = 1;
             }
         }
-
-
-        /* vec = new long double[nL * nH];
-         for (int j = 0; j < nL * nH; j++)
-         {
-             vec[j] = initialTemperature;
-             temp[j] = 0;
-         }
-
-         for (int i = 0; i < nL * nH; i++)
-         {
-             for (int j = 0; j < nL * nH; j++)
-             {
-                 temp[i] += ((globalMatrixC[i][j] / simulationStepTime) * vec[j]);
-             }
-         }
-
-         VectorP tempVectorP;
-         tempVectorP.alpha = alpha;
-         tempVectorP.ambientTemperature = ambientTemperature;
-         tempVectorP.CalculateVectorP(elementList[i]);
-
-         modifyIndexes(i, tempVectorP);
-     }
-     for (int j = 0; j < nL * nH; j++)
-     {
-         vectorP[j] = globalVectorP[j];
-         globalVectorP[j] = -globalVectorP[j] + temp[j];
-         for (int k = 0; k < nL * nH; k++)
-         {
-             globalMatrixH[j][k] += globalMatrixHBC[j][k] + (globalMatrixC[j][k] / simulationStepTime);
-         }
-     }
- }*/
     }
 }
