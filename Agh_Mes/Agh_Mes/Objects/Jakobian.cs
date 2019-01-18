@@ -34,7 +34,7 @@ namespace Agh_Mes.Objects
             CaclulateShapeFuncions();
         }
 
-        public void CaclulateShapeFuncions()
+        private void CaclulateShapeFuncions()
         {
             for (int i = 0; i < 4; i++)
             {

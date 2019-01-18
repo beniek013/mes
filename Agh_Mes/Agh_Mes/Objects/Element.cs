@@ -140,8 +140,8 @@ namespace Agh_Mes
 
         public void CalculateP() {
             double[] vector_p = new double[4];
-            double[] vector_p_sum = new double[4];
-            var vector_p_multiply = new List<double[]>();
+            double[] vectorP_ = new double[4];
+            var vectorP_list = new List<double[]>();
             double[] P_sum = new double[4];
             double[] length = new double[4];
             double[] detJ = new double[4];
@@ -169,7 +169,7 @@ namespace Agh_Mes
 
             for (int i = 0; i < 4; i++)
             {
-                vector_p_sum = new double[4];
+                vectorP_ = new double[4];
                 for (int j = 0; j < 2; j++)
                 {
                     vector_p[0] = Functions.N1(PowPc[i*2+j, 0], PowPc[i*2+j, 1]);
@@ -179,20 +179,20 @@ namespace Agh_Mes
 
                     for (int k = 0; k < 4; k++)
                     {
-                        vector_p_sum[k] += vector_p[k];
+                        vectorP_[k] += vector_p[k];
                     }
                 }
                 for (int k = 0; k < 4; k++)
                 {
-                    vector_p_sum[k] *= detJ[k] * isSurface[i] * (Constatns.alpha) * -Constatns.ambientTemperature;
+                    vectorP_[k] *= detJ[k] * isSurface[i] * (Constatns.alpha) * -Constatns.ambientTemperature;
                 }
-                vector_p_multiply.Add(vector_p_sum);
+                vectorP_list.Add(vectorP_);
             }
             P = new double[4];
             for (int i = 0; i < 4; i++) {
                 for (int k = 0; k < 4; k++)
                 {
-                    P[i] += vector_p_multiply[k][i];
+                    P[i] += vectorP_list[k][i];
                 }
             }
         }

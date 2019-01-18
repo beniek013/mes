@@ -14,7 +14,7 @@ namespace Agh_Mes
             temperature = temp;
             x = x0;
             y = y0;
-            if (this.x == 0.0 || this.y == 0.0 || this.x == (int)Constatns.h || this.y == (int)Constatns.w)
+            if (x == 0.0 || y == 0.0 || x == (int)Constatns.h || y == (int)Constatns.w)
                 isHeated = true;
             else isHeated = false;
         }
