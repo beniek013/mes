@@ -8,19 +8,13 @@ namespace Agh_Mes
     public class Element
     {
         private readonly int id;
-        public int K; // współczynnik przewodzenia
-        public List<Node> nodess;
-        //public List<KeyValuePair<double, double>> ksiEta;
-
-        //public List<List<double>> H;
-        //public double[][] H;
-        //public List<List<double>> C;
-        //public double[][] ;
+        public int K;
+        public List<Node> nodes;
         public double[] isSurface = new double[4] { 0, 0, 0, 0 };
 
-        public double[,] H = new double[4, 4];
-        public double[] P = new double[4];
-        public double[,] C = new double[4, 4];
+        public double[,] H = new double[(int)Constatns.nH, (int)Constatns.nH];
+        public double[] P = new double[(int)Constatns.nH];
+        public double[,] C = new double[(int)Constatns.nH, (int)Constatns.nH];
         public double[,] dNdx = new double[4, 4];
         public double[,] dNdy = new double[4, 4];
         public double[,,] dNdxT = new double[4, 4, 4];
@@ -31,10 +25,10 @@ namespace Agh_Mes
 
         public double[,] HBC = new double[4, 4];
 
-        public Element(int Id, List<Node> nodess)
+        public Element(int Id, List<Node> nodes)
         {
             id = Id;
-            this.nodess = nodess;
+            this.nodes = nodes;
             K = Constatns.k;
         }
 
@@ -42,22 +36,22 @@ namespace Agh_Mes
         {
             for (int i = 0; i < 4; i++)
             {
-                dNdx[0, i] = jakobian.inversedJacobian[0, 0] * jakobian.dNdksi[i, 0] + jakobian.inversedJacobian[0, 1] * jakobian.
+                dNdx[0, i] = jakobian.invertedJacobian[0, 0] * jakobian.dNdksi[i, 0] + jakobian.invertedJacobian[0, 1] * jakobian.
                     dNdeta[i, 0];
-                dNdx[1, i] = jakobian.inversedJacobian[1, 0] * jakobian.dNdksi[i, 1] + jakobian.inversedJacobian[1, 1] * jakobian.
+                dNdx[1, i] = jakobian.invertedJacobian[1, 0] * jakobian.dNdksi[i, 1] + jakobian.invertedJacobian[1, 1] * jakobian.
                     dNdeta[i, 1];
-                dNdx[2, i] = jakobian.inversedJacobian[2, 0] * jakobian.dNdksi[i, 2] + jakobian.inversedJacobian[2, 1] * jakobian.
+                dNdx[2, i] = jakobian.invertedJacobian[2, 0] * jakobian.dNdksi[i, 2] + jakobian.invertedJacobian[2, 1] * jakobian.
                     dNdeta[i, 2];
-                dNdx[3, i] = jakobian.inversedJacobian[3, 0] * jakobian.dNdksi[i, 3] + jakobian.inversedJacobian[3, 1] * jakobian.
+                dNdx[3, i] = jakobian.invertedJacobian[3, 0] * jakobian.dNdksi[i, 3] + jakobian.invertedJacobian[3, 1] * jakobian.
                     dNdeta[i, 3];
 
-                dNdy[0, i] = jakobian.inversedJacobian[0, 2] * jakobian.dNdksi[i, 0] + jakobian.inversedJacobian[0, 3] * jakobian.
+                dNdy[0, i] = jakobian.invertedJacobian[0, 2] * jakobian.dNdksi[i, 0] + jakobian.invertedJacobian[0, 3] * jakobian.
                     dNdeta[i, 0];
-                dNdy[1, i] = jakobian.inversedJacobian[1, 2] * jakobian.dNdksi[i, 1] + jakobian.inversedJacobian[1, 3] * jakobian.
+                dNdy[1, i] = jakobian.invertedJacobian[1, 2] * jakobian.dNdksi[i, 1] + jakobian.invertedJacobian[1, 3] * jakobian.
                     dNdeta[i, 1];
-                dNdy[2, i] = jakobian.inversedJacobian[2, 2] * jakobian.dNdksi[i, 2] + jakobian.inversedJacobian[2, 3] * jakobian.
+                dNdy[2, i] = jakobian.invertedJacobian[2, 2] * jakobian.dNdksi[i, 2] + jakobian.invertedJacobian[2, 3] * jakobian.
                     dNdeta[i, 2];
-                dNdy[3, i] = jakobian.inversedJacobian[3, 2] * jakobian.dNdksi[i, 3] + jakobian.inversedJacobian[3, 3] * jakobian.
+                dNdy[3, i] = jakobian.invertedJacobian[3, 2] * jakobian.dNdksi[i, 3] + jakobian.invertedJacobian[3, 3] * jakobian.
                     dNdeta[i, 3];
             }
 
@@ -117,7 +111,7 @@ namespace Agh_Mes
             double[] detJ = new double[4];
 
             double[,,] sum = new double[4, 4, 4];
-            double[,,] PowPc = new double[4, 2, 2]
+            double[,,] IntegrationPoints = new double[4, 2, 2]
             {
                 { {-Constatns.jp3,-1 },{Constatns.jp3,-1 } },
                 { {1,-Constatns.jp3 },{1,Constatns.jp3 } },
@@ -125,10 +119,10 @@ namespace Agh_Mes
                 { {-1,Constatns.jp3 },{-1,-Constatns.jp3 } }
             };
 
-            length[0] = Math.Sqrt(Math.Pow(nodess[1].x - nodess[0].x, 2) + Math.Pow(nodess[1].y - nodess[0].y, 2));
-            length[1] = Math.Sqrt(Math.Pow(nodess[1].x - nodess[2].x, 2) + Math.Pow(nodess[1].y - nodess[2].y, 2));
-            length[2] = Math.Sqrt(Math.Pow(nodess[2].x - nodess[3].x, 2) + Math.Pow(nodess[2].y - nodess[3].y, 2));
-            length[3] = Math.Sqrt(Math.Pow(nodess[0].x - nodess[3].x, 2) + Math.Pow(nodess[0].y - nodess[3].y, 2));
+            length[0] = Math.Sqrt(Math.Pow(nodes[1].x - nodes[0].x, 2) + Math.Pow(nodes[1].y - nodes[0].y, 2));
+            length[1] = Math.Sqrt(Math.Pow(nodes[1].x - nodes[2].x, 2) + Math.Pow(nodes[1].y - nodes[2].y, 2));
+            length[2] = Math.Sqrt(Math.Pow(nodes[2].x - nodes[3].x, 2) + Math.Pow(nodes[2].y - nodes[3].y, 2));
+            length[3] = Math.Sqrt(Math.Pow(nodes[0].x - nodes[3].x, 2) + Math.Pow(nodes[0].y - nodes[3].y, 2));
 
             for (int i = 0; i < 4; i++) {
                 detJ[i] = length[i] / 2;
@@ -136,15 +130,15 @@ namespace Agh_Mes
 
             for (int i = 0; i < 4; i++)
             {
-                temp1[0] = Functions.N1(PowPc[i, 0, 0], PowPc[i, 0, 1]);
-                temp1[1] = Functions.N2(PowPc[i, 0, 0], PowPc[i, 0, 1]);
-                temp1[2] = Functions.N3(PowPc[i, 0, 0], PowPc[i, 0, 1]);
-                temp1[3] = Functions.N4(PowPc[i, 0, 0], PowPc[i, 0, 1]);
+                temp1[0] = Functions.N1(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                temp1[1] = Functions.N2(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                temp1[2] = Functions.N3(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                temp1[3] = Functions.N4(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
 
-                temp2[0] = Functions.N1(PowPc[i, 1, 0], PowPc[i, 1, 1]);
-                temp2[1] = Functions.N2(PowPc[i, 1, 0], PowPc[i, 1, 1]);
-                temp2[2] = Functions.N3(PowPc[i, 1, 0], PowPc[i, 1, 1]);
-                temp2[3] = Functions.N4(PowPc[i, 1, 0], PowPc[i, 1, 1]);
+                temp2[0] = Functions.N1(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                temp2[1] = Functions.N2(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                temp2[2] = Functions.N3(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                temp2[3] = Functions.N4(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
 
                 for (int j = 0; j < 4; j++)
                 {
@@ -176,10 +170,10 @@ namespace Agh_Mes
                 {-1,-Constatns.jp3 } 
             };
 
-            length[0] = Math.Sqrt(Math.Pow(nodess[1].x - nodess[0].x, 2) + Math.Pow(nodess[1].y - nodess[0].y, 2));
-            length[1] = Math.Sqrt(Math.Pow(nodess[1].x - nodess[2].x, 2) + Math.Pow(nodess[1].y - nodess[2].y, 2));
-            length[2] = Math.Sqrt(Math.Pow(nodess[2].x - nodess[3].x, 2) + Math.Pow(nodess[2].y - nodess[3].y, 2));
-            length[3] = Math.Sqrt(Math.Pow(nodess[0].x - nodess[3].x, 2) + Math.Pow(nodess[0].y - nodess[3].y, 2));
+            length[0] = Math.Sqrt(Math.Pow(nodes[1].x - nodes[0].x, 2) + Math.Pow(nodes[1].y - nodes[0].y, 2));
+            length[1] = Math.Sqrt(Math.Pow(nodes[1].x - nodes[2].x, 2) + Math.Pow(nodes[1].y - nodes[2].y, 2));
+            length[2] = Math.Sqrt(Math.Pow(nodes[2].x - nodes[3].x, 2) + Math.Pow(nodes[2].y - nodes[3].y, 2));
+            length[3] = Math.Sqrt(Math.Pow(nodes[0].x - nodes[3].x, 2) + Math.Pow(nodes[0].y - nodes[3].y, 2));
 
             for (int i = 0; i < 4; i++)
             {

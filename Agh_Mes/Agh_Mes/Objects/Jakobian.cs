@@ -17,15 +17,12 @@ namespace Agh_Mes.Objects
         public double[,] dNdeta = new double[4, 4];
         public double[,] jacobian = new double[4, 4];
         public double[] detJacobian = new double[4];
-        public double[,] inversedJacobian = new double[4, 4];
+        public double[,] invertedJacobian = new double[4, 4];
 
         public Jakobian()
         {
-            ksi[0] = ksi[3] = -Constatns.jp3;
-            ksi[1] = ksi[2] = Constatns.jp3;
-
-            eta[0] = eta[1] = -Constatns.jp3;
-            eta[3] = eta[2] = Constatns.jp3;
+            ksi[0] = ksi[3] = eta[3] = eta[2] = Constatns.jp3;
+            ksi[1] = ksi[2] = eta[0] = eta[1] = -Constatns.jp3;
 
             for (int i = 0; i < 4; i++)
             {
@@ -36,24 +33,7 @@ namespace Agh_Mes.Objects
             }
         }
 
-        public void LiczWspolrzednePunktopwCalkowania(Element element)
-        {
-            for (int i = 0; i < 4; i++)
-            {
-                InterpolatedCoordinates[i, 0] = 
-                    N[i, 0] * element.nodess[0].x + 
-                    N[i, 1] * element.nodess[1].x + 
-                    N[i, 2] * element.nodess[2].x + 
-                    N[i, 3] * element.nodess[3].x;
-                InterpolatedCoordinates[i, 1] = 
-                    N[i, 0] * element.nodess[0].y + 
-                    N[i, 1] * element.nodess[1].y + 
-                    N[i, 2] * element.nodess[2].y + 
-                    N[i, 3] * element.nodess[3].y;
-            }
-        }
-
-        public void LiczPochodneFunkcjiKształtu()
+        public void CaclulateShapeFuncions()
         {
             for (int i = 0; i < 4; i++)
             {
@@ -69,24 +49,21 @@ namespace Agh_Mes.Objects
             }
         }
 
-        public void LiczJakobian(Element element)
+        public void CalulateJakobian(Element element)
         {
             for (int i = 0; i < 4; i++)
             {
-                jacobian[i, 0] = element.nodess[0].x * dNdksi[0, i] + element.nodess[1].x * dNdksi[1, i] + element.nodess[2].x *
-                    dNdksi[2, i] + element.nodess[3].x * dNdksi[3, i];
-                jacobian[i, 1] = element.nodess[0].y * dNdksi[0, i] + element.nodess[1].y * dNdksi[1, i] + element.nodess[2].y *
-                    dNdksi[2, i] + element.nodess[3].y * dNdksi[3, i];
-                jacobian[i, 2] = element.nodess[0].x * dNdeta[0, i] + element.nodess[1].x * dNdeta[1, i] + element.nodess[2].x *
-                    dNdeta[2, i] + element.nodess[3].x * dNdeta[3, i];
-                jacobian[i, 3] = element.nodess[0].y * dNdeta[0, i] + element.nodess[1].y * dNdeta[1, i] + element.nodess[2].y *
-                    dNdeta[2, i] + element.nodess[3].y * dNdeta[3, i];
+                jacobian[i, 0] = element.nodes[0].x * dNdksi[0, i] + element.nodes[1].x * dNdksi[1, i] + element.nodes[2].x * dNdksi[2, i] + element.nodes[3].x * dNdksi[3, i];
+                jacobian[i, 1] = element.nodes[0].y * dNdksi[0, i] + element.nodes[1].y * dNdksi[1, i] + element.nodes[2].y * dNdksi[2, i] + element.nodes[3].y * dNdksi[3, i];
+                jacobian[i, 2] = element.nodes[0].x * dNdeta[0, i] + element.nodes[1].x * dNdeta[1, i] + element.nodes[2].x * dNdeta[2, i] + element.nodes[3].x * dNdeta[3, i];
+                jacobian[i, 3] = element.nodes[0].y * dNdeta[0, i] + element.nodes[1].y * dNdeta[1, i] + element.nodes[2].y * dNdeta[2, i] + element.nodes[3].y * dNdeta[3, i];
 
                 detJacobian[i] = jacobian[i, 0] * jacobian[i, 3] - jacobian[i, 1] * jacobian[i, 2];
-                inversedJacobian[i, 0] = jacobian[i, 3] / detJacobian[i];
-                inversedJacobian[i, 1] = -(jacobian[i, 1] / detJacobian[i]);
-                inversedJacobian[i, 2] = -(jacobian[i, 2] / detJacobian[i]);
-                inversedJacobian[i, 3] = jacobian[i, 0] / detJacobian[i];
+
+                invertedJacobian[i, 0] = jacobian[i, 0] / detJacobian[i];
+                invertedJacobian[i, 1] = -(jacobian[i, 1] / detJacobian[i]);
+                invertedJacobian[i, 2] = -(jacobian[i, 2] / detJacobian[i]);
+                invertedJacobian[i, 3] = jacobian[i, 3] / detJacobian[i];
             }
         }
     }

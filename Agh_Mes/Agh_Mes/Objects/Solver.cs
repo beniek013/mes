@@ -8,9 +8,8 @@ namespace Agh_Mes.Objects
 {
     public static class Solver
     {
-        public static double[] gaussElimination(int n, double[,] gik, double[] rok)
+        public static double[] GaussElimination(int n, double[,] gik, double[] rok)
         {
-
             bool r = false;
             double m, s, e;
             e = Math.Pow(10, -12);
@@ -24,12 +23,10 @@ namespace Agh_Mes.Objects
                     tabAB[j, i] = gik[j, i];
                 }
             }
-
             for (int i = 0; i < n; i++)
             {
                 tabAB[i, n] = rok[i];
             }
-
             for (int i = 0; i < n - 1; i++)
             {
                 for (int j = i + 1; j < n; j++)
@@ -38,7 +35,6 @@ namespace Agh_Mes.Objects
                     {
                         throw new Exception("dzielnik rowny 0");
                     }
-
                     m = -tabAB[j, i] / tabAB[i, i];
                     for (int k = 0; k < n + 1; k++)
                     {
@@ -46,7 +42,6 @@ namespace Agh_Mes.Objects
                     }
                 }
             }
-
             for (int i = n - 1; i >= 0; i--)
             {
                 s = tabAB[i, n];
