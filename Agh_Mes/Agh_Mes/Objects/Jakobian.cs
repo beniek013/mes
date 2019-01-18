@@ -31,6 +31,7 @@ namespace Agh_Mes.Objects
                 N[i, 2] = Functions.N3(ksi[i], eta[i]);
                 N[i, 3] = Functions.N4(ksi[i], eta[i]);
             }
+            CaclulateShapeFuncions();
         }
 
         public void CaclulateShapeFuncions()

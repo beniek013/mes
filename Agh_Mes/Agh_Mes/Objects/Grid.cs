@@ -49,16 +49,15 @@ namespace Agh_Mes
         }
         public void Aggregate()
         {
-            
             globalH = new double[(int)Constatns.nHnW, (int)Constatns.nHnW];
             globalHBC = new double[(int)Constatns.nHnW, (int)Constatns.nHnW];
             globalC = new double[(int)Constatns.nHnW, (int)Constatns.nHnW];
             globalP = new double[(int)Constatns.nHnW];
 
-            foreach(var element in elements)
+            Jakobian jakobian = new Jakobian();
+
+            foreach (var element in elements)
             {
-                Jakobian jakobian = new Jakobian();
-                jakobian.CaclulateShapeFuncions();
                 jakobian.CalulateJakobian(element);
                 element.CalcluateH(jakobian);
                 for (int j = 0; j < 4; j++)
@@ -88,16 +87,16 @@ namespace Agh_Mes
                 for (int j = 0; j < 4; j++) {
                     globalP[element.nodes[j].id - 1] += element.P[j];
                 }
-
-                t0 = new double[(int)Constatns.nHnW];
-                for (int j = 0; j < Constatns.nHnW; j++)
-                {
-                    t0[j] = Constatns.initialTemperature; ;
-                }
             }
         }
+
         public void CalculateTemperature()
         {
+            t0 = new double[(int)Constatns.nHnW];
+            for (int j = 0; j < Constatns.nHnW; j++)
+            {
+                t0[j] = Constatns.initialTemperature; ;
+            }
             for (int j = 0; j < Constatns.nHnW; j++)
             {
                 for (int k = 0; k < Constatns.nHnW; k++)

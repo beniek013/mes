@@ -36,23 +36,10 @@ namespace Agh_Mes
         {
             for (int i = 0; i < 4; i++)
             {
-                dNdx[0, i] = jakobian.invertedJacobian[0, 0] * jakobian.dNdksi[i, 0] + jakobian.invertedJacobian[0, 1] * jakobian.
-                    dNdeta[i, 0];
-                dNdx[1, i] = jakobian.invertedJacobian[1, 0] * jakobian.dNdksi[i, 1] + jakobian.invertedJacobian[1, 1] * jakobian.
-                    dNdeta[i, 1];
-                dNdx[2, i] = jakobian.invertedJacobian[2, 0] * jakobian.dNdksi[i, 2] + jakobian.invertedJacobian[2, 1] * jakobian.
-                    dNdeta[i, 2];
-                dNdx[3, i] = jakobian.invertedJacobian[3, 0] * jakobian.dNdksi[i, 3] + jakobian.invertedJacobian[3, 1] * jakobian.
-                    dNdeta[i, 3];
-
-                dNdy[0, i] = jakobian.invertedJacobian[0, 2] * jakobian.dNdksi[i, 0] + jakobian.invertedJacobian[0, 3] * jakobian.
-                    dNdeta[i, 0];
-                dNdy[1, i] = jakobian.invertedJacobian[1, 2] * jakobian.dNdksi[i, 1] + jakobian.invertedJacobian[1, 3] * jakobian.
-                    dNdeta[i, 1];
-                dNdy[2, i] = jakobian.invertedJacobian[2, 2] * jakobian.dNdksi[i, 2] + jakobian.invertedJacobian[2, 3] * jakobian.
-                    dNdeta[i, 2];
-                dNdy[3, i] = jakobian.invertedJacobian[3, 2] * jakobian.dNdksi[i, 3] + jakobian.invertedJacobian[3, 3] * jakobian.
-                    dNdeta[i, 3];
+                for (int j = 0; j < 4; j++) {
+                    dNdx[j,i] = jakobian.invertedJacobian[j,0] * jakobian.dNdksi[i,j] + jakobian.invertedJacobian[j, 1] * jakobian.dNdeta[i, j];
+                    dNdy[j,i] = jakobian.invertedJacobian[j,2] * jakobian.dNdksi[i,j] + jakobian.invertedJacobian[j, 3] * jakobian.dNdeta[i, j];
+                }
             }
 
             for (int i = 0; i < 4; i++)
@@ -84,20 +71,20 @@ namespace Agh_Mes
 
         public void CalulateC(Jakobian jakobian)
         {
-            double[,,] temp = new double[4, 4, 4];
+            double[,,] fourMatrixs = new double[4, 4, 4];
 
             for (int i = 0; i < 4; i++)
             {
                 for (int j = 0; j < 4; j++)
                 {
-                    temp[i, j, 0] = jakobian.N[0, j] * jakobian.N[0, i] * jakobian.detJacobian[0] * Constatns.c * Constatns.ro;
-                    temp[i, j, 1] = jakobian.N[1, j] * jakobian.N[1, i] * jakobian.detJacobian[1] * Constatns.c * Constatns.ro;
-                    temp[i, j, 2] = jakobian.N[2, j] * jakobian.N[2, i] * jakobian.detJacobian[2] * Constatns.c * Constatns.ro;
-                    temp[i, j, 3] = jakobian.N[3, j] * jakobian.N[3, i] * jakobian.detJacobian[3] * Constatns.c * Constatns.ro;
+                    fourMatrixs[i, j, 0] = jakobian.N[0, j] * jakobian.N[0, i] * jakobian.detJacobian[0] * Constatns.c * Constatns.ro;
+                    fourMatrixs[i, j, 1] = jakobian.N[1, j] * jakobian.N[1, i] * jakobian.detJacobian[1] * Constatns.c * Constatns.ro;
+                    fourMatrixs[i, j, 2] = jakobian.N[2, j] * jakobian.N[2, i] * jakobian.detJacobian[2] * Constatns.c * Constatns.ro;
+                    fourMatrixs[i, j, 3] = jakobian.N[3, j] * jakobian.N[3, i] * jakobian.detJacobian[3] * Constatns.c * Constatns.ro;
 
                     for (int k = 0; k < 4; k++)
                     {
-                        C[i, j] += temp[i, j, k];
+                        C[i, j] += fourMatrixs[i, j, k];
                     }
                 }
             }
@@ -105,9 +92,9 @@ namespace Agh_Mes
 
         public void CalculateHBC()
         {
-            double[] temp1 = new double[4];
-            double[] temp2 = new double[4];
-            double[] length = new double[4];
+            double[] pc1 = new double[4];
+            double[] pc2 = new double[4];
+            double[] length = new double[4];//długośc boku
             double[] detJ = new double[4];
 
             double[,,] sum = new double[4, 4, 4];
@@ -130,21 +117,21 @@ namespace Agh_Mes
 
             for (int i = 0; i < 4; i++)
             {
-                temp1[0] = Functions.N1(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
-                temp1[1] = Functions.N2(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
-                temp1[2] = Functions.N3(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
-                temp1[3] = Functions.N4(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                pc1[0] = Functions.N1(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                pc1[1] = Functions.N2(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                pc1[2] = Functions.N3(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
+                pc1[3] = Functions.N4(IntegrationPoints[i, 0, 0], IntegrationPoints[i, 0, 1]);
 
-                temp2[0] = Functions.N1(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
-                temp2[1] = Functions.N2(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
-                temp2[2] = Functions.N3(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
-                temp2[3] = Functions.N4(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                pc2[0] = Functions.N1(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                pc2[1] = Functions.N2(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                pc2[2] = Functions.N3(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
+                pc2[3] = Functions.N4(IntegrationPoints[i, 1, 0], IntegrationPoints[i, 1, 1]);
 
                 for (int j = 0; j < 4; j++)
                 {
                     for (int k = 0; k < 4; k++)
                     {
-                        sum[i, j, k] = ((Constatns.alpha * temp1[j] * temp1[k]) + (Constatns.alpha * temp2[j] * temp2[k])) * detJ[i];
+                        sum[i, j, k] = ((Constatns.alpha * pc1[j] * pc1[k]) + (Constatns.alpha * pc2[j] * pc2[k])) * detJ[i];
                         HBC[j, k] += isSurface[i] * sum[i, j, k];
                     }
                 }
